@@ -121,26 +121,42 @@
             text-align: center;
             width:50px;
         }
-        .tools .detailed {
+        .tools .detailed-btn {
             position: fixed;
             top: 20px;
             left: 20px;
             color: #fff;
         }
-        .detailed-list {
+        .detailed {
             position: fixed;
             top: 0;
             right: -110%;
             height: 100%;
-            width: 60%;
-            padding: 10px;
-            background: #fff;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
             text-align: left;
             font-size: 14px;
             transition: .4s;
         }
-        .detailed-list.show {
+        
+        .detailed.show {
             right: 0;
+        }
+        .detailed .bg{
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 30%;
+        }
+        .detailed-list {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 70%;
+            background: #fff;
+            padding: 10px;
         }
         .detailed-list>div {
             padding-bottom: 5px;
@@ -178,18 +194,22 @@
 <div id="result" class="result">
 </div>
 <div id="tools" class="tools">
-    <span class="detailed" @click="showDetailed">分组明细</span>
-    <div class="detailed-list" :class="{'show': detailedStatus}">
-        <template v-for="(list, group, index) in groupingList">
-            <div v-if="list.length > 0">
-                <p>{{group}}</p>
-                <span v-for="name in list">{{name}}</span>
-            </div>
-        </template>
+    <span class="detailed-btn" @click="showDetailed(true)">分组明细</span>
+    <div class="detailed" :class="{'show': detailedStatus}">
+        <div class="bg" @click="showDetailed(false)"></div>
+        <div class="detailed-list" >
+            <template v-for="(list, group, index) in groupingList">
+                <div v-if="list.length > 0">
+                    <p>{{group}}</p>
+                    <span v-for="name in list">{{name}}</span>
+                </div>
+            </template>
+        </div>
     </div>
     <button
     v-for="value in btns"
     class="pure-button"
+    @click="onClick(value)"
     :class="{ 'button-error': selected == value}"
     >{{value}}</button>
     <button
@@ -263,7 +283,7 @@
                 selected: 4,
                 running: false,
                 btns: [
-                    4, 3
+                    3, 4, 5
                 ],
                 groupingList: grouping,
                 detailedStatus: false
@@ -284,8 +304,8 @@
                         location.reload(true);
                     }
                 },
-                showDetailed: function (){
-                    this.detailedStatus = !this.detailedStatus
+                showDetailed: function (type){
+                    this.detailedStatus = type
                 },
                 onClick: function(num){
                     $('#result').css('display', 'none');
